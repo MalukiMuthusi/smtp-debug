@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"log"
 	"net"
@@ -26,7 +27,7 @@ func main() {
 	// The code works when I use a localhost proxy
 	//   	socks5://dante:maluki@127.0.0.1:1080
 
-	client, err := newSMTPClient("gmail.com", "socks5://dante:maluki@127.0.0.1:1080")
+	client, err := newSMTPClient("gmail.com", "socks5://dante:maluki@35.242.186.23:1080")
 
 	if err != nil {
 		log.Println(err)
@@ -128,6 +129,15 @@ func dialSMTP(addr, proxyURI string) (*smtp.Client, error) {
 
 		return nil, err
 	}
+
+	buf := bufio.NewReader(netConn)
+	bytes, err := buf.ReadBytes('\n')
+	if err != nil {
+
+		log.Println(err)
+		return nil, err
+	}
+	log.Printf("%s\n", bytes)
 
 	client, err := smtp.NewClient(netConn, host)
 
